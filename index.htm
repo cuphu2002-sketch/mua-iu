@@ -1,26 +1,20 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <title>Thị Mủa ơi</title>
-    <meta property="og:title" content="Món quà nhỏ dành cho em!" />
-    <meta property="og:description" content="Nhấn vào để xem bí mật anh giấu trong này nhé..." />
-    <meta property="og:image" content="https://i.postimg.cc/qRS2Xhhb/Screenshot-2026-04-16-211050.png" />
-
-    <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Arial', sans-serif; }
-        .bg-blur { position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: url('https://i.postimg.cc/qRS2Xhhb/Screenshot-2026-04-16-211050.png') no-repeat center center; 
-            background-size: cover; filter: brightness(0.2) blur(10px); z-index: -1; }
-        .main-ui { position: relative; z-index: 10; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        .title-top { color: #fff; font-size: 1.8rem; font-style: italic; text-shadow: 0 0 10px #ff2d75; margin-bottom: 20px; }
-        .crystal-ball { position: relative; width: 260px; height: 260px; border-radius: 50%; padding: 5px; 
-            background: linear-gradient(45deg, #ff2d75, #00d2ff); box-shadow: 0 0 40px #ff2d75; animation: pulse 3s infinite alternate; }
-        .crystal-ball img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; object-position: center 20%; border: 2px solid #fff; }
-        .title-bottom { margin-top: 30px; color: #fff; font-size: 3rem; font-weight: bold; text-shadow: 0 0 20px #ff2d75; }
-        canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
-        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thị Mủa ơi!</title>
+<style>
+    body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Arial', sans-serif; }
+    .bg-blur { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('mua.png') no-repeat center center; background-size: cover; filter: brightness(0.2) blur(10px); z-index: -1; }
+    .main-ui { position: relative; z-index: 10; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    .title-top { color: #fff; font-size: 1.8rem; font-style: italic; text-shadow: 0 0 10px #ff2d75; margin-bottom: 20px; }
+    .crystal-ball { position: relative; width: 260px; height: 260px; border-radius: 50%; padding: 5px; background: linear-gradient(45deg, #ff2d75, #00d2ff); box-shadow: 0 0 40px #ff2d75; animation: pulse 3s infinite alternate; cursor: pointer; }
+    .crystal-ball img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; object-position: center 20%; border: 2px solid #fff; }
+    .title-bottom { margin-top: 30px; color: #fff; font-size: 3rem; font-weight: bold; text-shadow: 0 0 20px #ff2d75; }
+    canvas { position: fixed; top: 0; left: 0; z-index: 5; pointer-events: none; }
+    @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
+</style>
 </head>
 <body>
     <div class="bg-blur"></div>
@@ -28,12 +22,12 @@
     <div class="main-ui">
         <div class="title-top">Thị Mủa ơi</div>
         <div class="crystal-ball">
-            <img src="https://i.postimg.cc/qRS2Xhhb/Screenshot-2026-04-16-211050.png" alt="Princess">
+            <img src="mua.png" alt="Princess">
         </div>
         <div class="title-bottom">Em Làm Công Chúa Của Anh Nhé</div>
     </div>
 
-   <script>
+<script>
     const canvas = document.getElementById('fw');
     const ctx = canvas.getContext('2d');
     let particles = [];
@@ -49,57 +43,71 @@
         constructor(x, y, isAuto = false) {
             this.x = x;
             this.y = y;
-            this.size = Math.random() * 15 + 10;
-            // Góc bắn 360 độ ngẫu nhiên
+            // Kích thước tim (tự động nhỏ hơn chạm một chút cho tinh tế)
+            this.size = isAuto ? (Math.random() * 10 + 8) : (Math.random() * 16 + 12);
+            // Bắn 360 độ: Tính toán góc ngẫu nhiên
             const angle = Math.random() * Math.PI * 2;
-            const velocity = isAuto ? (Math.random() * 12 + 5) : (Math.random() * 8 + 2);
+            // Tốc độ: Chạm bắn mạnh hơn tự động
+            const velocity = isAuto ? (Math.random() * 5 + 2) : (Math.random() * 10 + 4);
             this.speedX = Math.cos(angle) * velocity;
             this.speedY = Math.sin(angle) * velocity;
             this.opacity = 1;
-            this.color = `hsl(${Math.random() * 30 + 330}, 100%, 65%)`; // Màu hồng/đỏ lung linh
+            // Màu sắc ngẫu nhiên để rực rỡ hơn
+            this.color = Math.random() < 0.5 ? '#ff2d75' : '#00d2ff';
         }
         update() {
             this.x += this.speedX;
             this.y += this.speedY;
-            this.opacity -= 0.015;
+            this.opacity -= 0.015; // Mờ dần
         }
         draw() {
             ctx.globalAlpha = this.opacity;
             ctx.fillStyle = this.color;
             ctx.font = `${this.size}px Arial`;
+            // Dùng ký tự trái tim đậm ❤ cho rõ nét
             ctx.fillText('❤', this.x, this.y);
         }
     }
 
-    // Hiệu ứng khi CHẠM vào màn hình
-    function createExplosion(e) {
+    // 1. HIỆU ỨNG TỰ ĐỘNG BẮN TIM (Auto Firework)
+    let autoLaunchInterval;
+    function startAutoLaunch() {
+        // Cứ mỗi 1.5 giây bắn một "quả pháo" tim từ giữa màn hình
+        autoLaunchInterval = setInterval(() => {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            // Tạo ra 30 trái tim một lần bắn tự động
+            for (let i = 0; i < 30; i++) {
+                particles.push(new Heart(centerX, centerY, true));
+            }
+        }, 1500); 
+    }
+
+    // 2. HIỆU ỨNG CHẠM VÀO MÀN HÌNH (Touch & Click Interaction)
+    function createHeartsOnTouch(e) {
         let x, y;
-        if (e.touches) {
+        if (e.touches) { // Điện thoại
             x = e.touches[0].clientX;
             y = e.touches[0].clientY;
-        } else {
+        } else { // Máy tính
             x = e.clientX;
             y = e.clientY;
         }
-        // Bắn 30 trái tim một lúc khi chạm
-        for (let i = 0; i < 30; i++) {
+        // Bắn ra 40 trái tim mỗi lần chạm cho rực rỡ full màn hình
+        for (let i = 0; i < 40; i++) {
             particles.push(new Heart(x, y));
         }
     }
 
-    window.addEventListener('mousedown', createExplosion);
-    window.addEventListener('touchstart', createExplosion);
+    // Gắn sự kiện (Event Listeners)
+    // Sửa z-index và pointer-events để canvas nhận sự kiện chạm
+    canvas.style.pointerEvents = 'auto'; // Cho phép canvas nhận click/touch
+    canvas.addEventListener('mousedown', createHeartsOnTouch);
+    canvas.addEventListener('touchstart', createHeartsOnTouch);
 
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Tự động bắn pháo hoa từ giữa màn hình
-        if (Math.random() < 0.05) {
-            for(let i=0; i<5; i++) {
-                particles.push(new Heart(canvas.width/2, canvas.height/2, true));
-            }
-        }
-
         for (let i = 0; i < particles.length; i++) {
             particles[i].update();
             particles[i].draw();
@@ -110,7 +118,11 @@
         }
         requestAnimationFrame(animate);
     }
+
+    // Khởi chạy mọi thứ
+    startAutoLaunch();
     animate();
+
 </script>
 </body>
 </html>

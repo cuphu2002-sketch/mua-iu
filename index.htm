@@ -25,7 +25,7 @@
             font-family: 'Arial', sans-serif;
         }
 
-        /* Nền mờ ảo bao phủ toàn màn hình */
+        /* Nền mờ ảo bao phủ full toàn màn hình */
         .bg-blur {
             position: fixed;
             top: 0; left: 0;
@@ -114,11 +114,11 @@
 <canvas id="fireworksCanvas"></canvas>
 
 <div class="main-ui">
-    <div class="title-top">Anh có món quà cho em</div>
+    <div class="title-top">Mủa Ơi</div>
     <div class="crystal-ball">
         <img src="https://i.postimg.cc/qRS2Xhhb/Screenshot-2026-04-16-211050.png" alt="Công Chúa">
     </div>
-    <div class="title-bottom">Em Là Công Chúa Của Anh</div>
+    <div class="title-bottom">Em Làm Công Chúa Của Anh Nhé</div>
     <div class="footer">Dành tặng cho Mủa</div>
 </div>
 
@@ -129,7 +129,7 @@
     canvas.height = window.innerHeight;
 
     let particles = [];
-    const SPAWN_RATE = 0.04; // Tốc độ bắn bình thường, lãng mạn
+    const SPAWN_RATE = 0.04; // Tốc độ bắn nhanh bình thường, lãng mạn
     const COLORS = ['#ff2d75', '#ff85a2', '#ffffff', '#00d2ff'];
 
     class Heart {
@@ -138,7 +138,7 @@
             this.y = y;
             this.color = color;
             this.angle = Math.random() * Math.PI * 2;
-            this.velocity = Math.random() * 2 + 1.5; // Tốc độ trôi nhẹ nhàng
+            this.velocity = Math.random() * 2 + 1.5; // Tốc độ trôi nhẹ nhàng sống động
             this.friction = 0.98;
             this.gravity = 0.01;
             this.size = Math.random() * 5 + 10;

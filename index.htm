@@ -33,38 +33,79 @@
         <div class="title-bottom">Em Làm Công Chúa Của Anh Nhé</div>
     </div>
 
-    <script>
-        const c = document.getElementById('fw'), x = c.getContext('2d');
-        let p = [];
-        c.width = window.innerWidth; c.height = window.innerHeight;
-        class Heart {
-            constructor(tx, ty) {
-                this.x = tx; this.y = ty;
-                this.a = Math.random() * Math.PI * 2;
-                this.v = Math.random() * 2 + 1;
-                this.s = Math.random() * 10 + 10;
-                this.al = 1;
-            }
-            show() {
-                x.globalAlpha = this.al; x.fillStyle = '#ff2d75';
-                x.font = `${this.s}px Arial`; x.fillText('❤', this.x, this.y);
-            }
-            move() {
-                this.x += Math.cos(this.a) * this.v;
-                this.y += Math.sin(this.a) * this.v + 0.5;
-                this.al -= 0.01;
+   <script>
+    const canvas = document.getElementById('fw');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    // Tự động điều chỉnh kích thước màn hình
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    class Heart {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.size = Math.random() * 15 + 10;
+            this.speedX = Math.random() * 6 - 3; // Bay sang trái/phải
+            this.speedY = Math.random() * -6 - 2; // Bay lên trên
+            this.opacity = 1;
+        }
+        update() {
+            this.x += this.speedX;
+            this.y += this.speedY;
+            this.opacity -= 0.02; // Mờ dần
+        }
+        draw() {
+            ctx.globalAlpha = this.opacity;
+            ctx.fillStyle = '#ff2d75';
+            ctx.font = `${this.size}px Arial`;
+            ctx.fillText('❤', this.x, this.y);
+        }
+    }
+
+    // HIỆU ỨNG CHẠM VÀO MÀN HÌNH (Touch & Click)
+    function createHearts(e) {
+        let x, y;
+        if (e.touches) { // Nếu là điện thoại
+            x = e.touches[0].clientX;
+            y = e.touches[0].clientY;
+        } else { // Nếu là máy tính
+            x = e.clientX;
+            y = e.clientY;
+        }
+        // Tạo ra 10 trái tim mỗi lần chạm
+        for (let i = 0; i < 10; i++) {
+            particles.push(new Heart(x, y));
+        }
+    }
+
+    window.addEventListener('mousedown', createHearts);
+    window.addEventListener('touchstart', createHearts);
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Tự động bắn tim nhẹ nhàng ở giữa màn hình (để web không bị trống)
+        if (Math.random() < 0.03) {
+            particles.push(new Heart(canvas.width/2, canvas.height/2));
+        }
+
+        for (let i = 0; i < particles.length; i++) {
+            particles[i].update();
+            particles[i].draw();
+            if (particles[i].opacity <= 0) {
+                particles.splice(i, 1);
+                i--;
             }
         }
-        function draw() {
-            x.clearRect(0, 0, c.width, c.height);
-            if (Math.random() < 0.05) {
-                let rx = Math.random() * c.width, ry = Math.random() * c.height * 0.7;
-                for(let i=0; i<15; i++) p.push(new Heart(rx, ry));
-            }
-            p.forEach((h, i) => { h.move(); h.show(); if(h.al <= 0) p.splice(i, 1); });
-            requestAnimationFrame(draw);
-        }
-        draw();
-    </script>
+        requestAnimationFrame(animate);
+    }
+    animate();
+</script>
 </body>
 </html>

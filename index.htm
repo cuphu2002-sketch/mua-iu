@@ -46,16 +46,17 @@
     resize();
 
     class Heart {
-        constructor(x, y) {
+        constructor(x, y, isAuto = false) {
             this.x = x;
             this.y = y;
             this.size = Math.random() * 15 + 10;
-            // Bắn 360 độ: Tính toán góc ngẫu nhiên
+            // Góc bắn 360 độ ngẫu nhiên
             const angle = Math.random() * Math.PI * 2;
-            const velocity = Math.random() * 8 + 2;
+            const velocity = isAuto ? (Math.random() * 12 + 5) : (Math.random() * 8 + 2);
             this.speedX = Math.cos(angle) * velocity;
             this.speedY = Math.sin(angle) * velocity;
             this.opacity = 1;
+            this.color = `hsl(${Math.random() * 30 + 330}, 100%, 65%)`; // Màu hồng/đỏ lung linh
         }
         update() {
             this.x += this.speedX;
@@ -64,13 +65,14 @@
         }
         draw() {
             ctx.globalAlpha = this.opacity;
-            ctx.fillStyle = '#ff2d75';
+            ctx.fillStyle = this.color;
             ctx.font = `${this.size}px Arial`;
             ctx.fillText('❤', this.x, this.y);
         }
     }
 
-    function createHearts(e) {
+    // Hiệu ứng khi CHẠM vào màn hình
+    function createExplosion(e) {
         let x, y;
         if (e.touches) {
             x = e.touches[0].clientX;
@@ -79,17 +81,25 @@
             x = e.clientX;
             y = e.clientY;
         }
-        // Bắn ra 20 trái tim mỗi lần chạm cho rực rỡ
-        for (let i = 0; i < 20; i++) {
+        // Bắn 30 trái tim một lúc khi chạm
+        for (let i = 0; i < 30; i++) {
             particles.push(new Heart(x, y));
         }
     }
 
-    window.addEventListener('mousedown', createHearts);
-    window.addEventListener('touchstart', createHearts);
+    window.addEventListener('mousedown', createExplosion);
+    window.addEventListener('touchstart', createExplosion);
 
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Tự động bắn pháo hoa từ giữa màn hình
+        if (Math.random() < 0.05) {
+            for(let i=0; i<5; i++) {
+                particles.push(new Heart(canvas.width/2, canvas.height/2, true));
+            }
+        }
+
         for (let i = 0; i < particles.length; i++) {
             particles[i].update();
             particles[i].draw();

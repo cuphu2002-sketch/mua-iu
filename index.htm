@@ -38,7 +38,6 @@
     const ctx = canvas.getContext('2d');
     let particles = [];
 
-    // Tự động điều chỉnh kích thước màn hình
     function resize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -51,14 +50,17 @@
             this.x = x;
             this.y = y;
             this.size = Math.random() * 15 + 10;
-            this.speedX = Math.random() * 6 - 3; // Bay sang trái/phải
-            this.speedY = Math.random() * -6 - 2; // Bay lên trên
+            // Bắn 360 độ: Tính toán góc ngẫu nhiên
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = Math.random() * 8 + 2;
+            this.speedX = Math.cos(angle) * velocity;
+            this.speedY = Math.sin(angle) * velocity;
             this.opacity = 1;
         }
         update() {
             this.x += this.speedX;
             this.y += this.speedY;
-            this.opacity -= 0.02; // Mờ dần
+            this.opacity -= 0.015;
         }
         draw() {
             ctx.globalAlpha = this.opacity;
@@ -68,18 +70,17 @@
         }
     }
 
-    // HIỆU ỨNG CHẠM VÀO MÀN HÌNH (Touch & Click)
     function createHearts(e) {
         let x, y;
-        if (e.touches) { // Nếu là điện thoại
+        if (e.touches) {
             x = e.touches[0].clientX;
             y = e.touches[0].clientY;
-        } else { // Nếu là máy tính
+        } else {
             x = e.clientX;
             y = e.clientY;
         }
-        // Tạo ra 10 trái tim mỗi lần chạm
-        for (let i = 0; i < 10; i++) {
+        // Bắn ra 20 trái tim mỗi lần chạm cho rực rỡ
+        for (let i = 0; i < 20; i++) {
             particles.push(new Heart(x, y));
         }
     }
@@ -89,12 +90,6 @@
 
     function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Tự động bắn tim nhẹ nhàng ở giữa màn hình (để web không bị trống)
-        if (Math.random() < 0.03) {
-            particles.push(new Heart(canvas.width/2, canvas.height/2));
-        }
-
         for (let i = 0; i < particles.length; i++) {
             particles[i].update();
             particles[i].draw();
